@@ -1150,8 +1150,6 @@ public class UserForm extends javax.swing.JFrame {
         errorLabels.forEach(l -> l.setIcon(null));
         taDescription.setText("");
         
-        lblIcon.setIcon(new ImageIcon(getClass().getResource("/resources/travolta_h_348.jpg")));
-        
         actorModel.clear();
         directorModel.clear();
         allGenresModel.clear();
@@ -1163,6 +1161,7 @@ public class UserForm extends javax.swing.JFrame {
         selectedGenre = null;
         selectedActor = null;
         selectedDirector = null;
+        
     }
 
     private void fillForm(Movie movie) {
@@ -1239,6 +1238,7 @@ public class UserForm extends javax.swing.JFrame {
             try {
                 setIcon(lblIcon, new File(movie.getPicturePath()));
             } catch (Exception e) {
+                lblIcon.setIcon(new ImageIcon(getClass().getResource("/resources/travolta_h_348.png")));
                 MessageUtils.showErrorMessage("Error", "Movie poster file is not valid!");
             }
             
