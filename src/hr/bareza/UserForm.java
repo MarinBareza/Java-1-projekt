@@ -57,7 +57,7 @@ public class UserForm extends javax.swing.JFrame {
     private Person selectedArtist;
     private Person selectedActor;
     private Person selectedDirector;
-
+    
     public Genre getSelectedGenre() {
         return selectedGenre;
     }
@@ -66,6 +66,18 @@ public class UserForm extends javax.swing.JFrame {
         return selectedArtist;
     }
 
+    private boolean directorDialog;
+
+    public boolean getDirectorDialog() {
+        return directorDialog;
+    }
+
+    public boolean editGenreDialog;
+
+    public boolean getEditGenreDialog() {
+        return editGenreDialog;
+    }
+    
     private final DefaultListModel<Person> actorModel = new DefaultListModel<>();
     private final DefaultListModel<Person> directorModel = new DefaultListModel<>();
     private final DefaultListModel<Genre> genreModel = new DefaultListModel<>();
@@ -153,7 +165,6 @@ public class UserForm extends javax.swing.JFrame {
         miEditArtist = new javax.swing.JMenuItem();
         miEditGenre = new javax.swing.JMenuItem();
         miExport = new javax.swing.JMenu();
-        miImport = new javax.swing.JMenuItem();
         miExportInXml = new javax.swing.JMenuItem();
         menuAdmin = new javax.swing.JMenu();
         miAdminWindow = new javax.swing.JMenuItem();
@@ -286,6 +297,11 @@ public class UserForm extends javax.swing.JFrame {
         tblMovies.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblMoviesMouseClicked(evt);
+            }
+        });
+        tblMovies.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tblMoviesKeyReleased(evt);
             }
         });
         jScrollPane1.setViewportView(tblMovies);
@@ -683,14 +699,6 @@ public class UserForm extends javax.swing.JFrame {
 
         miExport.setText("XML");
 
-        miImport.setText("Import");
-        miImport.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                miImportActionPerformed(evt);
-            }
-        });
-        miExport.add(miImport);
-
         miExportInXml.setText("Export");
         miExportInXml.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -801,7 +809,8 @@ public class UserForm extends javax.swing.JFrame {
 
     private void miNewDirectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miNewDirectorActionPerformed
         if (selectedMovie != null) {
-            new NewDirectorDialog(this, false).setVisible(true);
+            directorDialog = true;
+            new NewArtistDialog(this, false).setVisible(true);
         } else {
             MessageUtils.showInformationMessage("Director needs a movie", "Select a movie!");
         }
@@ -809,7 +818,8 @@ public class UserForm extends javax.swing.JFrame {
 
     private void miNewActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miNewActorActionPerformed
         if (selectedMovie != null) {
-            new NewActorDialog(this, false).setVisible(true);
+            directorDialog = false;
+            new NewArtistDialog(this, false).setVisible(true);
         } else {
             MessageUtils.showInformationMessage("Actor needs a movie", "Select a movie!");
         }
@@ -817,7 +827,8 @@ public class UserForm extends javax.swing.JFrame {
 
     private void miNewGenreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miNewGenreActionPerformed
         if (selectedMovie != null) {
-            new NewGenreDialog(this, false).setVisible(true);
+            editGenreDialog = false;
+            new GenreDialog(this, false).setVisible(true);
         } else {
             MessageUtils.showInformationMessage("Genre needs a movie", "Select a movie!");
         }
@@ -830,7 +841,8 @@ public class UserForm extends javax.swing.JFrame {
 
     private void miEditGenreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miEditGenreActionPerformed
         if (selectedGenre != null) {
-            new EditGenreDialog(this, false).setVisible(true);
+            editGenreDialog = true;
+            new GenreDialog(this, false).setVisible(true);
         } else {
             MessageUtils.showInformationMessage("No Genre", "Select a Genre!");
         }
@@ -877,22 +889,6 @@ public class UserForm extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_miExportInXmlActionPerformed
-
-    private void miImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miImportActionPerformed
-        if (MessageUtils.showConfirmDialog("Import data", "Are you sure?") == JOptionPane.YES_OPTION) {
-            try {
-                MovieArchive movieArchive = (MovieArchive) JAXBUtils.load(MovieArchive.class, XML_FILENAME);
-                
-                movieTableModel = new MovieTableModel(movieArchive.getMovies());
-                tblMovies.setModel(movieTableModel);
-                
-                MessageUtils.showInformationMessage("Import data", "Import was successful!");
-            } catch (Exception ex) {
-                Logger.getLogger(UserForm.class.getName()).log(Level.SEVERE, null, ex);
-                MessageUtils.showErrorMessage("Error", "Unable to import data!");
-            }
-        }
-    }//GEN-LAST:event_miImportActionPerformed
 
     private void miNewMovieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miNewMovieActionPerformed
         new NewMovieDialog(this, false).setVisible(true);
@@ -1040,6 +1036,24 @@ public class UserForm extends javax.swing.JFrame {
         new AdminForm().setVisible(true);
     }//GEN-LAST:event_miAdminWindowActionPerformed
 
+    private void tblMoviesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblMoviesKeyReleased
+        clearForm();
+        int selectedRow = tblMovies.getSelectedRow();		
+        int rowIndex = tblMovies.convertRowIndexToModel(selectedRow);
+        int selectedMovieId = (int) movieTableModel.getValueAt(rowIndex, 0);
+
+        try {
+            Optional<Movie> optMovie = repository.selectMovie(selectedMovieId);
+            if (optMovie.isPresent()) {
+                selectedMovie = optMovie.get();
+                fillForm(selectedMovie);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(UserForm.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Unable to show movie!");
+        }
+    }//GEN-LAST:event_tblMoviesKeyReleased
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDeleteArtist;
     private javax.swing.JButton btnDeleteGenre;
@@ -1091,7 +1105,6 @@ public class UserForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem miExit;
     private javax.swing.JMenu miExport;
     private javax.swing.JMenuItem miExportInXml;
-    private javax.swing.JMenuItem miImport;
     private javax.swing.JMenuItem miNewActor;
     private javax.swing.JMenuItem miNewDirector;
     private javax.swing.JMenuItem miNewGenre;
@@ -1433,20 +1446,8 @@ public class UserForm extends javax.swing.JFrame {
             try {
                 Person person = (Person) transferable.getTransferData(PersonTransferable.PERSON_FLAVOR);
                 
-                /*Set<Person> actorsSet = Arrays.asList((Person[]) actorModel.toArray()).stream().collect(Collectors.toSet());
-                
-                if (actorsSet.add(person)) {
-                    newActors.add(person);
-                    
-                    List<Person> actorsList = actorsSet.stream().collect(Collectors.toList());
-                    actorModel.clear();
-                    actorsList.forEach(a -> actorModel.addElement(a));
-                    lsActors.setModel(actorModel);
-                    return true;
-                }*/
-                
                 if (repository.createActor(selectedMovie.getId(), person) != 0) {
-                    fillForm(selectedMovie);
+                    loadMovieLists(selectedMovie);
                     return true;
                 }
             }catch (Exception ex) {
@@ -1471,7 +1472,7 @@ public class UserForm extends javax.swing.JFrame {
                 Person person = (Person) transferable.getTransferData(PersonTransferable.PERSON_FLAVOR);
                 
                 if (repository.createDirector(selectedMovie.getId(), person) != 0) {
-                    fillForm(selectedMovie);
+                    loadMovieLists(selectedMovie);
                     return true;
                 }
             } catch (Exception ex) {
@@ -1496,7 +1497,7 @@ public class UserForm extends javax.swing.JFrame {
                 Genre genre = (Genre) transferable.getTransferData(GenreTransferable.GENRE_FLAVOR);
                 
                 if (repository.createGenre(selectedMovie.getId(), genre) != 0) {
-                    fillForm(selectedMovie);
+                    loadMovieLists(selectedMovie);
                     return true;
                 }
             } catch (Exception ex) {

@@ -15,7 +15,7 @@ import javax.swing.ImageIcon;
  *
  * @author Bareza
  */
-public class NewGenreDialog extends javax.swing.JDialog {
+public class GenreDialog extends javax.swing.JDialog {
 
     private final UserForm parent;
     
@@ -24,10 +24,11 @@ public class NewGenreDialog extends javax.swing.JDialog {
      * @param parent
      * @param modal
      */
-    public NewGenreDialog(java.awt.Frame parent, boolean modal) {
+    public GenreDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         this.parent = (UserForm) parent;
         initComponents();
+        init();
     }
 
     /**
@@ -125,19 +126,26 @@ public class NewGenreDialog extends javax.swing.JDialog {
     private void btnNewGenreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewGenreActionPerformed
         if (formValid()) {
             try {
-                Genre genre = new Genre(tfName.getText().trim());
-                
-                if (parent.addNewGenre(genre)) {
-                    dispose();
-                    MessageUtils.showInformationMessage("Information", "Genre created successfully!");
+                if (parent.getEditGenreDialog() == true) {
+                    if (parent.editGenre(new Genre(tfName.getText().trim()))) {
+                        dispose();
+                        MessageUtils.showInformationMessage("Information", "Genre edited successfully!");
+                    } else {
+                        MessageUtils.showErrorMessage("Error", "Genre already exists!");
+                        clearForm();
+                    }
                 } else {
-                    MessageUtils.showErrorMessage("Error", "Genre already exists!");
-                    clearForm();
+                    if (parent.addNewGenre(new Genre(tfName.getText().trim()))) {
+                        dispose();
+                        MessageUtils.showInformationMessage("Information", "Genre created successfully!");
+                    } else {
+                        MessageUtils.showErrorMessage("Error", "Genre already exists!");
+                        clearForm();
+                    }
                 }
-                
             } catch (Exception e) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, e);
-                MessageUtils.showErrorMessage("Error", "Unable to create new Genre!");
+                MessageUtils.showErrorMessage("Error", "Unable to create or edit Genre!");
             }
         }
     }//GEN-LAST:event_btnNewGenreActionPerformed
@@ -160,6 +168,13 @@ public class NewGenreDialog extends javax.swing.JDialog {
     private void clearForm() {
         tfName.setText("");
         lblNameError.setIcon(null);
+    }
+
+    private void init() {
+        if (parent.getEditGenreDialog() == true) {
+            this.setTitle("Edit Genre");
+            btnNewGenre.setText("Edit Genre");
+        }
     }
     
 }

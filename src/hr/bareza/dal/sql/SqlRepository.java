@@ -107,7 +107,7 @@ public class SqlRepository implements Repository{
     private static final String GET_GENRES_FROM_MOVIE = "{ CALL GetGenresFromMovie (?) }";
     
         @Override
-    public int InitAdmin() throws Exception {
+    public int initAdmin() throws Exception {
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(CREATE_ADMIN_ON_INITIALIZATION)) {
             
@@ -119,7 +119,7 @@ public class SqlRepository implements Repository{
     }
     
     @Override
-    public void ClearRepository() throws Exception {
+    public void clearRepository() throws Exception {
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(CLEAR_REPOSITORY)) {
             
@@ -190,7 +190,7 @@ public class SqlRepository implements Repository{
     }
 
     @Override
-    public Optional<User> SelectUserByUsername(String username) throws Exception {
+    public Optional<User> selectUserByUsername(String username) throws Exception {
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(SELECT_USER_BY_USERNAME)) {
             

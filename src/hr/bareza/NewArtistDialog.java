@@ -19,7 +19,7 @@ import javax.swing.text.JTextComponent;
  *
  * @author Bareza
  */
-public class NewActorDialog extends javax.swing.JDialog {
+public class NewArtistDialog extends javax.swing.JDialog {
 
     private final UserForm parent;
     List<JTextComponent> validationFields;
@@ -30,7 +30,7 @@ public class NewActorDialog extends javax.swing.JDialog {
      * @param parent
      * @param modal
      */
-    public NewActorDialog(java.awt.Frame parent, boolean modal) {
+    public NewArtistDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         this.parent = (UserForm) parent;
         initComponents();
@@ -50,12 +50,12 @@ public class NewActorDialog extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         tfFirstName = new javax.swing.JTextField();
         tfLastName = new javax.swing.JTextField();
-        btnNewActor = new javax.swing.JButton();
+        btnNewArtist = new javax.swing.JButton();
         lblFirstNameError = new javax.swing.JLabel();
         lblLastNameError = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("New Director");
+        setTitle("New Actor");
         setResizable(false);
 
         kGradientPanel1.setkEndColor(new java.awt.Color(0, 153, 153));
@@ -78,13 +78,13 @@ public class NewActorDialog extends javax.swing.JDialog {
         tfLastName.setForeground(new java.awt.Color(208, 152, 255));
         tfLastName.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 2, 1, 0, new java.awt.Color(208, 152, 255)));
 
-        btnNewActor.setBackground(new java.awt.Color(255, 255, 255));
-        btnNewActor.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 18)); // NOI18N
-        btnNewActor.setForeground(new java.awt.Color(208, 152, 255));
-        btnNewActor.setText("Add new actor");
-        btnNewActor.addActionListener(new java.awt.event.ActionListener() {
+        btnNewArtist.setBackground(new java.awt.Color(255, 255, 255));
+        btnNewArtist.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 18)); // NOI18N
+        btnNewArtist.setForeground(new java.awt.Color(208, 152, 255));
+        btnNewArtist.setText("Add new actor");
+        btnNewArtist.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNewActorActionPerformed(evt);
+                btnNewArtistActionPerformed(evt);
             }
         });
 
@@ -103,7 +103,7 @@ public class NewActorDialog extends javax.swing.JDialog {
                     .addComponent(jLabel2))
                 .addGap(36, 36, 36)
                 .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnNewActor, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnNewArtist, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(kGradientPanel1Layout.createSequentialGroup()
                         .addComponent(tfLastName, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -133,7 +133,7 @@ public class NewActorDialog extends javax.swing.JDialog {
                         .addComponent(tfLastName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblLastNameError, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(btnNewActor, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnNewArtist, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(54, Short.MAX_VALUE))
         );
 
@@ -156,29 +156,38 @@ public class NewActorDialog extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnNewActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActorActionPerformed
+    private void btnNewArtistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewArtistActionPerformed
         if (formValid()) {
             try {
                 Person person = new Person(tfFirstName.getText().trim(), tfLastName.getText().trim());
                 
-                if (parent.addNewActor(person)) {
-                    dispose();
-                    MessageUtils.showInformationMessage("Information", "Actor created successfully!");
+                if (parent.getDirectorDialog() == true) {
+                    if (parent.addNewDirector(person)) {
+                        dispose();
+                        MessageUtils.showInformationMessage("Information", "Director created successfully!");
+                    } else {
+                        MessageUtils.showErrorMessage("Error", "Director already exists!");
+                        clearForm();
+                    }
                 } else {
-                    MessageUtils.showErrorMessage("Error", "Actor already exists!");
-                    clearForm();
+                    if (parent.addNewActor(person)) {
+                        dispose();
+                        MessageUtils.showInformationMessage("Information", "Actor created successfully!");
+                    } else {
+                        MessageUtils.showErrorMessage("Error", "Actor already exists!");
+                        clearForm();
+                    }
                 }
-                
             } catch (Exception e) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, e);
-                MessageUtils.showErrorMessage("Error", "Unable to create new Actor!");
+                MessageUtils.showErrorMessage("Error", "Unable to create new Artist!");
             }
         }
-    }//GEN-LAST:event_btnNewActorActionPerformed
+    }//GEN-LAST:event_btnNewArtistActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnNewActor;
+    private javax.swing.JButton btnNewArtist;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private keeptoo.KGradientPanel kGradientPanel1;
@@ -191,6 +200,11 @@ public class NewActorDialog extends javax.swing.JDialog {
     private void init() {
         errorLabels = Arrays.asList(lblFirstNameError, lblLastNameError);
         validationFields = Arrays.asList(tfFirstName, tfLastName);
+        
+        if (parent.getDirectorDialog() == true) {
+            btnNewArtist.setText("Add new director");
+            this.setTitle("New Director");
+        }
     }
     
     private boolean formValid() {

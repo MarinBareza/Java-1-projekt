@@ -103,14 +103,6 @@
             <Property name="text" type="java.lang.String" value="XML"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="miImport">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Import"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miImportActionPerformed"/>
-              </Events>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="miExportInXml">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Export"/>
@@ -697,6 +689,7 @@
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblMoviesMouseClicked"/>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="tblMoviesKeyReleased"/>
               </Events>
             </Component>
           </SubComponents>

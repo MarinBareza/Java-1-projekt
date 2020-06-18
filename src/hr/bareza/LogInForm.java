@@ -319,7 +319,7 @@ public class LogInForm extends javax.swing.JFrame {
     private void initRepository() throws Exception {
         repository = RepositoryFactory.getRepository();
         if (!repository.selectUser(1).isPresent()) {
-            repository.InitAdmin();
+            repository.initAdmin();
         }
         
     }
@@ -350,7 +350,7 @@ public class LogInForm extends javax.swing.JFrame {
 
     private boolean usernameExists() throws Exception {
         boolean ok = true;
-        user = repository.SelectUserByUsername(tfUsername.getText());
+        user = repository.selectUserByUsername(tfUsername.getText());
         
         if (user.isPresent()) {
             return ok;

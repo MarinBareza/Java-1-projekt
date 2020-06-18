@@ -437,7 +437,7 @@ public class AdminForm extends javax.swing.JFrame {
         if (MessageUtils.showConfirmDialog("Clear repository", "Are you sure?") == JOptionPane.YES_OPTION) {
         
             try {
-                repository.ClearRepository();
+                repository.clearRepository();
                 for (File file : new File(POSTERS).listFiles()) {
                     file.delete();
                 }

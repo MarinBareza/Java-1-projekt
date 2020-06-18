@@ -19,8 +19,8 @@ import java.util.Optional;
 public interface Repository {
     
     //Init
-    int InitAdmin() throws Exception;
-    void ClearRepository()throws Exception;
+    int initAdmin() throws Exception;
+    void clearRepository()throws Exception;
     
     //Administrator
     /*int createAdministrator(Administrator data) throws Exception;
@@ -34,7 +34,7 @@ public interface Repository {
     void updateUser(int id, User data) throws Exception;
     int deleteUser(String username) throws Exception;
     Optional<User> selectUser(int id) throws Exception;
-    Optional<User> SelectUserByUsername(String username) throws Exception;
+    Optional<User> selectUserByUsername(String username) throws Exception;
     List<User> selectUsers() throws Exception;
     
     //Movie
